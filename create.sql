@@ -2,183 +2,164 @@
 -- Please log an issue at https://redmine.postgresql.org/projects/pgadmin4/issues/new if you find any bugs, including reproduction steps.
 BEGIN;
 
-CREATE DATABASE hedgehogshop; 
-\c hedgehogshop 
-
-CREATE TABLE public.pays_mthods
-(
-    id integer,
-    name "char",
-    PRIMARY KEY (name)
-);
-
-CREATE TABLE public.customer_payment
-(
-    id integer,
-    customer_id integer,
-    type_pay "char",
-    number_records_references integer,
-    code integer
-);
 
 CREATE TABLE public.customers
 (
-    id integer,
-    nicnname "char",
-    password "char",
-    email "char",
+    customers_id integer,
+    customers_login "char",
+    customers_email "char",
+    password_1 "char",
+    password_2 "char",
     first_name "char",
     middle_name "char",
     last_name "char",
-    phone "char",
-    adress "char",
-    city "char",
-    country "char",
-    PRIMARY KEY (id)
+    customers_phone integer,
+    customers_country "char",
+    customers_city "char",
+    customers_adress "char",
+    PRIMARY KEY (customers_login)
 );
 
-CREATE TABLE public.category
+CREATE TABLE public.material_type
 (
-    id integer,
-    category "char"
+    material_id integer,
+    material_title "char",
+    PRIMARY KEY (material_title)
 );
 
-CREATE TABLE public.category_product
+CREATE TABLE public.colors
 (
-    id integer,
-    type "char",
-    category "char",
-    PRIMARY KEY (type)
+    colors_id integer,
+    colors_title "char",
+    PRIMARY KEY (colors_title)
+);
+
+CREATE TABLE public.category_item
+(
+    category_item_id integer,
+    category_item_title "char",
+    PRIMARY KEY (category_item_title)
+);
+
+CREATE TABLE public.subcategory
+(
+    subcategory_id integer,
+    subcategory_type "char",
+    subcategory_product "char",
+    PRIMARY KEY (subcategory_product)
+);
+
+CREATE TABLE public.payment_methods
+(
+    payment_methods_id integer,
+    payment_methods__title "char",
+    PRIMARY KEY (payment_methods__title)
 );
 
 CREATE TABLE public.product
 (
-    id integer,
-    category "char",
-    title "char",
-    description "char",
-    material_type "char",
-    color "char",
-    size integer,
+    product_id integer,
+    product_category "char",
+    product_description "char",
+    product_select_material "char",
+    product_select_color "char",
+    product_size integer,
     extra_parameter_1 boolean,
     extra_parameter_2 boolean,
     extra_parameter_3 boolean,
-    PRIMARY KEY (category, material_type, color)
+    product_title "char",
+    PRIMARY KEY (product_title)
 );
 
-CREATE TABLE public.material
+CREATE TABLE public."order"
 (
-    id integer,
-    title "char"
+    order_id integer,
+    order_customer "char",
+    order_payment_type "char",
+    order_wallet_pay "char",
+    end_adress_delivery "char",
+    full_name_reciplent "char",
+    order_date time with time zone,
+    order_buy_item "char"
 );
 
-CREATE TABLE public.color
+CREATE TABLE public.order_product
 (
-    id integer,
-    title "char"
+    order_order_buy_item "char",
+    product_product_title "char"
 );
 
-CREATE TABLE public.orders
+CREATE TABLE public.customers_basket
 (
-    id integer,
-    customer_order "char",
-    payment_type "char",
-    wallet_number "char",
-    items "char",
-    adress "char",
-    name "char",
-    PRIMARY KEY (id, items)
+    customers_basket_id integer,
+    customers_basket_login "char",
+    customers_basket_items "char",
+    PRIMARY KEY (customers_basket_items)
 );
 
-CREATE TABLE public.basket
+CREATE TABLE public.customers_basket_product
 (
-    id integer,
-    customer_basket "char",
-    items "char",
-    PRIMARY KEY (customer_basket, items)
+    customers_basket_customers_basket_items "char",
+    product_product_title "char"
 );
 
-CREATE TABLE public.basket_product
-(
-    basket_items "char",
-    product_title "char"
-);
-
-CREATE TABLE public.orders_product
-(
-    orders_items "char",
-    product_title "char"
-);
-
-ALTER TABLE public.customer_payment
-    ADD FOREIGN KEY (type_pay)
-    REFERENCES public.pays_mthods (name)
-    NOT VALID;
-
-
-ALTER TABLE public.customer_payment
-    ADD FOREIGN KEY (customer_id)
-    REFERENCES public.customers (id)
-    NOT VALID;
-
-
-ALTER TABLE public.category_product
-    ADD FOREIGN KEY (type)
-    REFERENCES public.category (category)
+ALTER TABLE public.subcategory
+    ADD FOREIGN KEY (subcategory_type)
+    REFERENCES public.category_item (category_item_title)
     NOT VALID;
 
 
 ALTER TABLE public.product
-    ADD FOREIGN KEY (material_type)
-    REFERENCES public.material (title)
+    ADD FOREIGN KEY (product_category)
+    REFERENCES public.subcategory (subcategory_product)
     NOT VALID;
 
 
 ALTER TABLE public.product
-    ADD FOREIGN KEY (color)
-    REFERENCES public.color (title)
+    ADD FOREIGN KEY (product_select_material)
+    REFERENCES public.material_type (material_title)
     NOT VALID;
 
 
-ALTER TABLE public.orders
-    ADD FOREIGN KEY (customer_order)
-    REFERENCES public.customers (id)
+ALTER TABLE public.product
+    ADD FOREIGN KEY (product_select_color)
+    REFERENCES public.colors (colors_title)
     NOT VALID;
 
 
-ALTER TABLE public.orders
-    ADD FOREIGN KEY (payment_type)
-    REFERENCES public.pays_mthods (name)
+ALTER TABLE public."order"
+    ADD FOREIGN KEY (order_customer)
+    REFERENCES public.customers (customers_login)
     NOT VALID;
 
 
-ALTER TABLE public.basket
-    ADD FOREIGN KEY (customer_basket)
-    REFERENCES public.customers (id)
+ALTER TABLE public."order"
+    ADD FOREIGN KEY (order_payment_type)
+    REFERENCES public.payment_methods (payment_methods__title)
     NOT VALID;
 
 
-ALTER TABLE public.basket_product
-    ADD FOREIGN KEY (basket_items)
-    REFERENCES public.basket (items)
+ALTER TABLE public.order_product
+    ADD FOREIGN KEY (product_product_title)
+    REFERENCES public.product (product_title)
     NOT VALID;
 
 
-ALTER TABLE public.basket_product
-    ADD FOREIGN KEY (product_title)
-    REFERENCES public.product (title)
+ALTER TABLE public.customers_basket
+    ADD FOREIGN KEY (customers_basket_login)
+    REFERENCES public.customers (customers_login)
     NOT VALID;
 
 
-ALTER TABLE public.orders_product
-    ADD FOREIGN KEY (orders_items)
-    REFERENCES public.orders (items)
+ALTER TABLE public.customers_basket_product
+    ADD FOREIGN KEY (customers_basket_customers_basket_items)
+    REFERENCES public.customers_basket (customers_basket_items)
     NOT VALID;
 
 
-ALTER TABLE public.orders_product
-    ADD FOREIGN KEY (product_title)
-    REFERENCES public.product (title)
+ALTER TABLE public.customers_basket_product
+    ADD FOREIGN KEY (product_product_title)
+    REFERENCES public.product (product_title)
     NOT VALID;
 
 END;

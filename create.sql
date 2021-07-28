@@ -3,9 +3,9 @@
 BEGIN;
 
 
-CREATE TABLE public.customers
+CREATE TABLE public.customers_users
 (
-    customers_id integer,
+    customers_id serial,
     customers_login "char",
     customers_email "char",
     password_1 "char",
@@ -22,28 +22,28 @@ CREATE TABLE public.customers
 
 CREATE TABLE public.material_type
 (
-    material_id integer,
+    material_id serial,
     material_title "char",
     PRIMARY KEY (material_title)
 );
 
 CREATE TABLE public.colors
 (
-    colors_id integer,
+    colors_id serial,
     colors_title "char",
     PRIMARY KEY (colors_title)
 );
 
 CREATE TABLE public.category_item
 (
-    category_item_id integer,
+    category_item_id serial,
     category_item_title "char",
     PRIMARY KEY (category_item_title)
 );
 
 CREATE TABLE public.subcategory
 (
-    subcategory_id integer,
+    subcategory_id serial,
     subcategory_type "char",
     subcategory_product "char",
     PRIMARY KEY (subcategory_product)
@@ -51,14 +51,14 @@ CREATE TABLE public.subcategory
 
 CREATE TABLE public.payment_methods
 (
-    payment_methods_id integer,
+    payment_methods_id serial,
     payment_methods__title "char",
     PRIMARY KEY (payment_methods__title)
 );
 
 CREATE TABLE public.product
 (
-    product_id integer,
+    product_id serial,
     product_category "char",
     product_description "char",
     product_select_material "char",
@@ -73,7 +73,7 @@ CREATE TABLE public.product
 
 CREATE TABLE public."order"
 (
-    order_id integer,
+    order_id serial,
     order_customer "char",
     order_payment_type "char",
     order_wallet_pay "char",
@@ -91,7 +91,7 @@ CREATE TABLE public.order_product
 
 CREATE TABLE public.customers_basket
 (
-    customers_basket_id integer,
+    customers_basket_id serial,
     customers_basket_login "char",
     customers_basket_items "char",
     PRIMARY KEY (customers_basket_items)
@@ -129,7 +129,7 @@ ALTER TABLE public.product
 
 ALTER TABLE public."order"
     ADD FOREIGN KEY (order_customer)
-    REFERENCES public.customers (customers_login)
+    REFERENCES public.customers_users (customers_login)
     NOT VALID;
 
 
@@ -147,7 +147,7 @@ ALTER TABLE public.order_product
 
 ALTER TABLE public.customers_basket
     ADD FOREIGN KEY (customers_basket_login)
-    REFERENCES public.customers (customers_login)
+    REFERENCES public.customers_users (customers_login)
     NOT VALID;
 
 

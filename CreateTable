@@ -68,6 +68,7 @@ CREATE TABLE public.product
     extra_parameter_2 boolean,
     extra_parameter_3 boolean,
     product_title text,
+    product_image bytea,
     PRIMARY KEY (product_title)
 );
 
@@ -101,6 +102,12 @@ CREATE TABLE public.customers_basket_product
 (
     customers_basket_customers_basket_items text,
     product_product_title text
+);
+
+CREATE TABLE public.statistic_text_data
+(
+    statistic_text_data_id serial,
+    statistic_text_data_text text
 );
 
 ALTER TABLE public.subcategory
